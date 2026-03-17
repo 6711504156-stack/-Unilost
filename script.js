@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+// เพิ่ม doc และ deleteDoc เข้ามาสำหรับการลบข้อมูล
+import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query, orderBy, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // ================= Firebase Configuration =================
 const firebaseConfig = {
@@ -153,6 +154,29 @@ imageInput.addEventListener('change', async (e) => {
     }
 });
 
+// ================= ฟังก์ชันลบข้อมูล (ใหม่) =================
+reportsGrid.addEventListener('click', async (e) => {
+    // ตรวจสอบว่าคลิกโดนปุ่มลบหรือไม่
+    const deleteBtn = e.target.closest('.delete-btn');
+    if (!deleteBtn) return;
+
+    // ดึง ID ของเอกสารจากปุ่ม
+    const docId = deleteBtn.getAttribute('data-id');
+    
+    // แจ้งเตือนยืนยันก่อนลบ
+    if (confirm('🎉 เจอของแล้วใช่ไหมครับ?\nคุณแน่ใจหรือไม่ที่จะ "ลบ" รายการนี้ออกจากระบบ (ลบแล้วกู้คืนไม่ได้นะ)')) {
+        try {
+            // สั่งลบข้อมูลจาก Firestore โดยใช้ ID
+            const docRef = doc(db, 'reports', docId);
+            await deleteDoc(docRef);
+            showToast('ลบรายการเรียบร้อยแล้ว!', 'success');
+        } catch (error) {
+            console.error("Error deleting document: ", error);
+            showToast('เกิดข้อผิดพลาด ไม่สามารถลบข้อมูลได้', 'error');
+        }
+    }
+});
+
 // ================= บันทึกข้อมูลลง Firestore =================
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -203,8 +227,9 @@ function loadReports() {
         
         emptyState.classList.add('hidden');
 
-        snapshot.forEach((doc) => {
-            const report = doc.data();
+        snapshot.forEach((docSnap) => {
+            const report = docSnap.data();
+            const docId = docSnap.id; // เก็บ ID ของแต่ละรายการไว้สำหรับใช้ลบ
             const isLost = report.type === 'lost';
             
             const typeBadge = isLost 
@@ -218,8 +243,14 @@ function loadReports() {
                 ? `<img src="${report.image}" alt="${report.name}" class="w-full h-48 object-cover">`
                 : `<div class="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-300"><i class="fa-solid fa-image text-4xl"></i></div>`;
 
+            // เพิ่มปุ่มถังขยะ (Delete Button) ไว้ที่มุมขวาบน
             const cardHtml = `
-                <div class="glass-card rounded-2xl overflow-hidden border ${borderColor} hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group">
+                <div class="glass-card rounded-2xl overflow-hidden border ${borderColor} hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group relative">
+                    
+                    <button data-id="${docId}" class="delete-btn absolute top-3 right-3 z-10 bg-white/90 text-red-500 hover:bg-red-500 hover:text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-all duration-300" title="เจอของแล้ว ลบเลย!">
+                        <i class="fa-solid fa-trash-can text-sm pointer-events-none"></i>
+                    </button>
+
                     <div class="relative">
                         ${imageHtml}
                         <div class="absolute top-3 left-3">${typeBadge}</div>
