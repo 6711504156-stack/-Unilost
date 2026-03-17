@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query, orderBy, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-// ================= Firebase Configuration =================
+// ================= Firebase Configuration ของคุณ =================
 const firebaseConfig = {
     apiKey: "AIzaSyD0Iso45TFPSP3_fqXgfG_DVn3y3qWfgGA",
     authDomain: "unilost-3ccc0.firebaseapp.com",
@@ -39,7 +39,7 @@ const listLoader = document.getElementById('list-loader');
 function showToast(message, type = 'success') {
     const toastContainer = document.getElementById('toast-container');
     const toast = document.createElement('div');
-    const bgClass = type === 'success' ? 'bg-pink-500' : (type === 'error' ? 'bg-red-400' : 'bg-blue-400'); // ปรับสี Toast ให้ดู Pastel น่ารักขึ้น
+    const bgClass = type === 'success' ? 'bg-pink-500' : (type === 'error' ? 'bg-red-400' : 'bg-blue-400');
     const icon = type === 'success' ? 'fa-heart' : (type === 'error' ? 'fa-face-sad-tear' : 'fa-paw');
 
     toast.className = `toast flex items-center ${bgClass} text-white px-6 py-4 rounded-2xl shadow-xl mb-3 border border-white/30`;
@@ -155,25 +155,24 @@ imageInput.addEventListener('change', async (e) => {
     }
 });
 
-// ================= ฟังก์ชันลบข้อมูล (พร้อมพลุฉลอง 🎉) =================
+// ================= ฟังก์ชันลบข้อมูล (จุดพลุฉลอง 🎉) =================
 reportsGrid.addEventListener('click', async (e) => {
     const deleteBtn = e.target.closest('.delete-btn');
     if (!deleteBtn) return;
 
     const docId = deleteBtn.getAttribute('data-id');
     
-    // เปลี่ยนคำถามยืนยันให้น่ารักขึ้น
     if (confirm('🎉 เจอของแล้วหรือคืนของให้เจ้าของแล้วใช่ไหมฮับ?\n(กดตกลงเพื่อลบรายการนี้ออกจากระบบได้เลยน้า)')) {
         try {
             const docRef = doc(db, 'reports', docId);
             await deleteDoc(docRef);
             
-            // ยิงพลุฉลองความสำเร็จ! 🎊
+            // ยิงพลุฉลอง!
             confetti({
                 particleCount: 150,
                 spread: 80,
                 origin: { y: 0.6 },
-                colors: ['#D4AF37', '#4A148C', '#ff69b4', '#87ceeb'] // สีพลุเข้ากับธีมเว็บ
+                colors: ['#D4AF37', '#4A148C', '#ff69b4', '#87ceeb'] 
             });
 
             showToast('เย้! ดีใจด้วยน้า ลบรายการเรียบร้อย 💖', 'success');
@@ -239,19 +238,16 @@ function loadReports() {
             const docId = docSnap.id;
             const isLost = report.type === 'lost';
             
-            // ปรับป้าย Badge น่ารักๆ
             const typeBadge = isLost 
                 ? `<span class="bg-indigo-500/90 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-wide shadow-md border border-white/20"><i class="fa-solid fa-bullhorn mr-1.5"></i> ตามหาของฮับ</span>`
                 : `<span class="bg-pink-400/90 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-wide shadow-md border border-white/20"><i class="fa-solid fa-gift mr-1.5"></i> เก็บของได้ฮับ</span>`;
             
             const timeString = report.createdAt ? timeAgo(report.createdAt.toDate()) : 'เมื่อกี้เลยฮับ 🐾';
 
-            // ภาพพร้อมเอฟเฟกต์ซูม (ใส่รูปหมาน้อยถ้ารูปไม่มี)
             const imageHtml = report.image 
                 ? `<img src="${report.image}" alt="${report.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out">`
                 : `<div class="w-full h-full bg-indigo-50 flex items-center justify-center text-indigo-200 group-hover:scale-110 transition-transform duration-700 ease-out"><i class="fa-solid fa-image text-5xl mb-2"></i></div>`;
 
-            // สร้างการ์ด
             const cardHtml = `
                 <div class="glass-premium rounded-[2rem] overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group relative border border-white/80 flex flex-col h-full">
                     
