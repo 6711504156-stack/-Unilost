@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
@@ -30,7 +29,8 @@
         <nav class="max-w-5xl mx-auto glass-premium rounded-full px-6 py-3 flex justify-between items-center shadow-lg border-b border-white/40">
             <div class="flex items-center space-x-3 cursor-pointer group" id="nav-logo">
                 <div class="w-12 h-12 rounded-full luxury-gradient flex items-center justify-center text-white shadow-md group-hover:shadow-lg transition-all transform group-hover:rotate-12 hover:scale-110 duration-300">
-                    <i class="fa-solid fa-paw text-xl"></i> </div>
+                    <i class="fa-solid fa-paw text-xl"></i>
+                </div>
                 <span class="font-bold text-2xl tracking-wide text-luxury-navy">
                     Uni<span class="text-gold-gradient">Lost</span> ✨
                 </span>
@@ -50,7 +50,7 @@
             <div class="glass-premium rounded-[2.5rem] p-8 sm:p-14 relative overflow-hidden flex flex-col md:flex-row items-center justify-between">
                 <div class="z-10 md:w-3/5 text-center md:text-left space-y-6">
                     <div class="inline-block bg-luxury-gold/10 text-luxury-gold font-semibold px-4 py-1.5 rounded-full text-sm mb-2 border border-luxury-gold/20 animate-pulse">
-                        <i class="fa-solid fa-star mr-1"></i> พื้นที่แบ่งปันของชาวจันทรเกษม
+                        <i class="fa-solid fa-star mr-1"></i> พื้นที่แบ่งปันของชาวมหาวิทยาลัย
                     </div>
                     <h1 class="text-4xl sm:text-6xl font-extrabold text-luxury-navy leading-tight tracking-tight">
                         ของหาย ไม่ใช่เรื่องใหญ่ <br>
@@ -193,6 +193,20 @@
                             </div>
                         </div>
                         <input type="hidden" id="base64ImageOutput">
+                    </div>
+
+                    <div class="flex items-start bg-pink-50/60 p-5 rounded-2xl border border-pink-100 shadow-sm transition-all hover:shadow-md group">
+                        <div class="flex items-center h-5 mt-0.5">
+                            <input id="privacyConsent" type="checkbox" required class="w-5 h-5 text-pink-500 bg-white border-pink-300 rounded focus:ring-pink-400 focus:ring-2 cursor-pointer accent-pink-500 transition-all">
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="privacyConsent" class="font-semibold text-luxury-navy cursor-pointer group-hover:text-pink-600 transition-colors">
+                                ฉันยินยอมให้เปิดเผยข้อมูลการติดต่อ 💌 <span class="text-red-500">*</span>
+                            </label>
+                            <p class="text-gray-500 mt-1 font-light leading-relaxed">
+                                อนุญาตให้ระบบแสดงช่องทางการติดต่อเพื่อใช้ในการตามหาสิ่งของภายในแอป UniLost เท่านั้น ปลอดภัยหายห่วงฮับ! 🛡️
+                            </p>
+                        </div>
                     </div>
 
                     <div class="pt-6 flex gap-4 border-t border-gray-100">
