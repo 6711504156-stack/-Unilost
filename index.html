@@ -3,77 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniLost - ตามหาของหายในมหาวิทยาลัย</title>
-    
+    <title>UniLost - ศูนย์รวมของหายในมหาวิทยาลัย</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: { sans: ['Kanit', 'sans-serif'] },
-                    colors: {
-                        luxury: { gold: '#D4AF37', goldlight: '#F3E5AB', navy: '#1A237E', purple: '#4A148C' }
-                    }
+                    colors: { luxury: { gold: '#D4AF37', goldlight: '#F3E5AB', navy: '#1A237E', purple: '#4A148C' } }
                 }
             }
         }
     </script>
-    
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-pattern text-gray-800 font-sans antialiased overflow-x-hidden">
+<body class="text-gray-800 font-sans antialiased">
+    
+    <div class="bg-aura"></div>
 
-    <nav class="luxury-gradient text-white shadow-lg sticky top-0 z-40">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                <div class="flex items-center space-x-3 cursor-pointer" id="nav-logo">
-                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-luxury-navy shadow-md">
-                        <i class="fa-solid fa-graduation-cap text-xl"></i>
-                    </div>
-                    <span class="font-bold text-2xl tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-luxury-goldlight to-white">
-                        UniLost
-                    </span>
-                </div>
-                <div class="flex items-center">
-                    <div id="db-status" class="text-sm bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm border border-white/30 hidden sm:block">
-                        <i class="fa-solid fa-database mr-2"></i> ระบบพร้อมใช้งาน
-                    </div>
+    <div class="fixed w-full top-0 z-50 pt-4 px-4 transition-all duration-300">
+        <nav class="max-w-5xl mx-auto glass-premium rounded-full px-6 py-3 flex justify-between items-center shadow-lg border-b border-white/40">
+            <div class="flex items-center space-x-3 cursor-pointer group" id="nav-logo">
+                <div class="w-12 h-12 rounded-full luxury-gradient flex items-center justify-center text-white shadow-md group-hover:shadow-lg transition-all transform group-hover:rotate-12 hover:scale-110 duration-300">
+                    <i class="fa-solid fa-paw text-xl"></i> </div>
+                <span class="font-bold text-2xl tracking-wide text-luxury-navy">
+                    Uni<span class="text-gold-gradient">Lost</span> ✨
+                </span>
+            </div>
+            <div class="flex items-center">
+                <div id="db-status" class="text-sm bg-green-50 text-green-700 px-5 py-2.5 rounded-full font-medium border border-green-200 shadow-sm hidden sm:flex items-center">
+                    <span class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span> ระบบออนไลน์ฮับ
                 </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </div>
 
-    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-12">
         
-        <div id="home-view" class="space-y-10 transition-opacity duration-500">
+        <div id="home-view" class="space-y-12 transition-opacity duration-500">
             
-            <div class="glass-card rounded-3xl p-8 sm:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between border-t-4 border-luxury-gold">
-                <div class="absolute -top-20 -right-20 w-64 h-64 bg-luxury-gold/10 rounded-full blur-3xl"></div>
-                <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-luxury-purple/10 rounded-full blur-3xl"></div>
-
+            <div class="glass-premium rounded-[2.5rem] p-8 sm:p-14 relative overflow-hidden flex flex-col md:flex-row items-center justify-between">
                 <div class="z-10 md:w-3/5 text-center md:text-left space-y-6">
-                    <h1 class="text-4xl sm:text-5xl font-bold text-luxury-navy leading-tight">
+                    <div class="inline-block bg-luxury-gold/10 text-luxury-gold font-semibold px-4 py-1.5 rounded-full text-sm mb-2 border border-luxury-gold/20 animate-pulse">
+                        <i class="fa-solid fa-star mr-1"></i> พื้นที่แบ่งปันของชาวจันทรเกษม
+                    </div>
+                    <h1 class="text-4xl sm:text-6xl font-extrabold text-luxury-navy leading-tight tracking-tight">
                         ของหาย ไม่ใช่เรื่องใหญ่ <br>
-                        <span class="text-transparent bg-clip-text gold-gradient">เราช่วยคุณหา!</span>
+                        <span class="text-gold-gradient">เราช่วยคุณหา! 💖</span>
                     </h1>
-                    <p class="text-lg text-gray-600">ศูนย์รวมการแจ้งของหายและตามหาเจ้าของในมหาวิทยาลัย สะดวก รวดเร็ว ปลอดภัย</p>
+                    <p class="text-lg text-gray-500 font-light max-w-lg">ไม่ต้องเศร้าไปนะฮับ! ศูนย์รวมการแจ้งของหายและตามหาเจ้าของ สะดวก รวดเร็ว และปลอดภัยที่สุด</p>
                     
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-4">
-                        <button id="btn-report-lost" class="gold-gradient hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-luxury-navy font-bold py-3 px-8 rounded-full flex items-center justify-center shadow-md">
-                            <i class="fa-solid fa-bullhorn mr-2"></i> ฉันทำของหาย
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-6">
+                        <button id="btn-report-lost" class="gold-gradient btn-glow text-luxury-navy font-bold py-4 px-8 rounded-full flex items-center justify-center shadow-lg transform transition-transform hover:-translate-y-1 hover:scale-105">
+                            <i class="fa-solid fa-bullhorn mr-2 text-lg"></i> แงๆ ฉันทำของหาย 🥺
                         </button>
-                        <button id="btn-report-found" class="bg-white border-2 border-luxury-navy text-luxury-navy hover:bg-luxury-navy hover:text-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300 font-bold py-3 px-8 rounded-full flex items-center justify-center shadow-sm">
-                            <i class="fa-solid fa-hand-holding-heart mr-2"></i> ฉันเจอของคนอื่น
+                        <button id="btn-report-found" class="bg-white border-2 border-luxury-navy/10 text-luxury-navy hover:border-luxury-navy hover:bg-luxury-navy/5 font-bold py-4 px-8 rounded-full flex items-center justify-center shadow-sm transform transition-all hover:-translate-y-1 hover:scale-105">
+                            <i class="fa-solid fa-hand-holding-heart mr-2 text-lg text-pink-400"></i> ฉันเจอของคนอื่น ✨
                         </button>
                     </div>
                 </div>
 
-                <div class="z-10 md:w-2/5 mt-8 md:mt-0 flex justify-center animate-float">
-                    <svg width="220" height="220" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="100" cy="100" r="90" fill="#F3E5AB" fill-opacity="0.4"/>
+                <div class="z-10 md:w-2/5 mt-12 md:mt-0 flex justify-center animate-float relative">
+                    <div class="absolute -top-6 -left-4 bg-white px-5 py-3 rounded-3xl rounded-br-none shadow-xl border border-luxury-gold/30 z-20 animate-bounce">
+                        <p class="text-luxury-navy font-bold text-lg leading-tight">โฮ่ง! 🐾<br><span class="text-xs font-medium text-gray-500">ให้ผมช่วยตามหานะฮับ</span></p>
+                    </div>
+                    
+                    <div class="absolute inset-0 bg-luxury-gold/20 blur-[50px] rounded-full"></div>
+                    <svg width="240" height="240" viewBox="0 0 200 200" fill="none" class="relative z-10 drop-shadow-2xl">
                         <path d="M50 90C50 62.3858 72.3858 40 100 40C127.614 40 150 62.3858 150 90V120C150 147.614 127.614 170 100 170C72.3858 170 50 147.614 50 120V90Z" fill="#E2E8F0"/>
                         <path d="M55 50C40 40 30 55 35 75C37.5 85 45 90 55 90V50Z" fill="#CBD5E1"/>
                         <path d="M145 50C160 40 170 55 165 75C162.5 85 155 90 145 90V50Z" fill="#CBD5E1"/>
@@ -82,7 +83,7 @@
                         <circle cx="82" cy="83" r="3" fill="white"/>
                         <circle cx="122" cy="83" r="3" fill="white"/>
                         <path d="M100 105C94.4772 105 90 100.523 90 95H110C110 100.523 105.523 105 100 105Z" fill="#0F172A"/>
-                        <circle cx="125" cy="115" r="35" stroke="#D4AF37" stroke-width="8" fill="rgba(255,255,255,0.4)"/>
+                        <circle cx="125" cy="115" r="35" stroke="#D4AF37" stroke-width="8" fill="rgba(255,255,255,0.8)"/>
                         <path d="M150 140L175 165" stroke="#D4AF37" stroke-width="10" stroke-linecap="round"/>
                         <path d="M150 140L175 165" stroke="#1E293B" stroke-width="4" stroke-linecap="round"/>
                         <path d="M40 45C40 45 60 20 100 20C140 20 160 45 160 45" stroke="#8B5CF6" stroke-width="12" stroke-linecap="round"/>
@@ -91,127 +92,123 @@
                 </div>
             </div>
 
-            <div class="space-y-6">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-2xl font-bold text-luxury-navy flex items-center">
-                        <i class="fa-solid fa-list-ul mr-3 text-luxury-gold"></i> รายการล่าสุด
+            <div class="space-y-8">
+                <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+                    <h2 class="text-3xl font-bold text-luxury-navy flex items-center">
+                        <span class="bg-luxury-gold/10 p-2 rounded-lg mr-3"><i class="fa-solid fa-list-ul text-luxury-gold"></i></span> รายการเพื่อนๆ ที่กำลังหาของ 🔍
                     </h2>
-                    <div id="list-loader" class="hidden">
-                        <i class="fa-solid fa-spinner fa-spin text-luxury-navy text-xl"></i>
+                    <div id="list-loader" class="hidden bg-white/50 px-4 py-2 rounded-full backdrop-blur-sm">
+                        <i class="fa-solid fa-spinner fa-spin text-luxury-navy"></i> กำลังโหลดฮับ...
                     </div>
                 </div>
 
-                <div id="reports-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div id="reports-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     </div>
                 
-                <div id="empty-state" class="hidden text-center py-16 glass-card rounded-2xl">
-                    <i class="fa-solid fa-box-open text-6xl text-gray-300 mb-4"></i>
-                    <h3 class="text-xl font-medium text-gray-500">ยังไม่มีรายการแจ้งเข้ามา</h3>
-                    <p class="text-gray-400 mt-2">เป็นคนแรกที่แจ้งข้อมูลสิ!</p>
+                <div id="empty-state" class="hidden text-center py-20 glass-premium rounded-[2rem]">
+                    <div class="text-7xl mb-6 animate-bounce">📭🐕</div>
+                    <h3 class="text-2xl font-bold text-luxury-navy">เย้! ตอนนี้ยังไม่มีของหายเลย</h3>
+                    <p class="text-gray-400 mt-2 font-light">มหาวิทยาลัยเราน่าอยู่สุดๆ ไปเลยฮับ ✨ เป็นคนแรกที่เริ่มประกาศสิ!</p>
                 </div>
             </div>
         </div>
 
         <div id="form-view" class="hidden max-w-2xl mx-auto transition-opacity duration-500">
-            <div class="glass-card rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden border-t-4 border-luxury-purple">
+            <div class="glass-premium rounded-[2.5rem] p-8 sm:p-12 shadow-2xl relative overflow-hidden">
                 
-                <button id="btn-back" class="absolute top-6 left-6 text-gray-400 hover:text-luxury-navy transition-colors">
-                    <i class="fa-solid fa-arrow-left text-xl"></i>
+                <button id="btn-back" class="absolute top-8 left-8 w-10 h-10 bg-gray-50 hover:bg-luxury-navy hover:text-white rounded-full flex items-center justify-center text-gray-500 transition-colors shadow-sm">
+                    <i class="fa-solid fa-arrow-left"></i>
                 </button>
                 
-                <div class="text-center mb-8 mt-4">
+                <div class="text-center mb-10 mt-4">
+                    <div class="inline-block bg-luxury-purple/10 text-luxury-purple p-3 rounded-2xl mb-4 animate-bounce">
+                        <i class="fa-solid fa-pen-to-square text-2xl"></i>
+                    </div>
                     <h2 class="text-3xl font-bold text-luxury-navy">📝 เพิ่มรายการใหม่</h2>
-                    <p class="text-gray-500 mt-2">กรอกรายละเอียดเพื่อช่วยเหลือซึ่งกันและกัน</p>
+                    <p class="text-gray-500 mt-2 font-light">กรอกรายละเอียดให้ครบถ้วนเพื่อช่วยเหลือเพื่อนๆ กันนะฮับ</p>
                 </div>
 
-                <form id="report-form" class="space-y-6">
+                <form id="report-form" class="space-y-7">
                     
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">ประเภทการแจ้ง <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">ประเภทการแจ้ง <span class="text-red-500">*</span></label>
                         <div class="grid grid-cols-2 gap-4">
-                            <label class="cursor-pointer">
+                            <label class="cursor-pointer group">
                                 <input type="radio" name="reportType" value="lost" class="peer sr-only" required>
-                                <div class="p-4 rounded-xl border-2 border-gray-200 text-center peer-checked:border-luxury-navy peer-checked:bg-indigo-50 hover:bg-gray-50 transition-all font-medium text-gray-600 peer-checked:text-luxury-navy">
-                                    <i class="fa-solid fa-bullhorn block text-2xl mb-2"></i> ของหาย
+                                <div class="p-5 rounded-2xl border-2 border-gray-100 bg-white text-center peer-checked:border-luxury-navy peer-checked:bg-indigo-50 transition-all font-medium text-gray-500 peer-checked:text-luxury-navy shadow-sm group-hover:shadow-md transform group-hover:-translate-y-1">
+                                    <i class="fa-solid fa-face-sad-cry block text-3xl mb-3 text-indigo-300 peer-checked:text-luxury-navy transition-colors"></i> ของหาย
                                 </div>
                             </label>
-                            <label class="cursor-pointer">
+                            <label class="cursor-pointer group">
                                 <input type="radio" name="reportType" value="found" class="peer sr-only" required>
-                                <div class="p-4 rounded-xl border-2 border-gray-200 text-center peer-checked:border-luxury-gold peer-checked:bg-yellow-50 hover:bg-gray-50 transition-all font-medium text-gray-600 peer-checked:text-yellow-700">
-                                    <i class="fa-solid fa-hand-holding-heart block text-2xl mb-2"></i> เจอของ
+                                <div class="p-5 rounded-2xl border-2 border-gray-100 bg-white text-center peer-checked:border-luxury-gold peer-checked:bg-yellow-50 transition-all font-medium text-gray-500 peer-checked:text-yellow-700 shadow-sm group-hover:shadow-md transform group-hover:-translate-y-1">
+                                    <i class="fa-solid fa-gift block text-3xl mb-3 text-yellow-300 peer-checked:text-luxury-gold transition-colors"></i> เจอของ
                                 </div>
                             </label>
                         </div>
                     </div>
 
-                    <div>
-                        <label for="itemName" class="block text-sm font-semibold text-gray-700 mb-2">ชื่อสิ่งของ <span class="text-red-500">*</span></label>
-                        <input type="text" id="itemName" required placeholder="เช่น กระเป๋าตังค์สีดำ, บัตรนักศึกษา" 
-                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-luxury-navy focus:border-transparent outline-none transition-all bg-white/50 focus:bg-white">
+                    <div class="bg-gray-50/50 p-6 rounded-2xl border border-gray-100 space-y-5">
+                        <div>
+                            <label for="itemName" class="block text-sm font-semibold text-gray-700 mb-2">ชื่อสิ่งของ 🎒 <span class="text-red-500">*</span></label>
+                            <input type="text" id="itemName" required placeholder="เช่น กระเป๋าตังค์น้องหมาสีดำ, บัตรนักศึกษา" 
+                                class="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-luxury-gold focus:border-transparent outline-none transition-all bg-white shadow-sm font-light">
+                        </div>
+
+                        <div>
+                            <label for="itemDesc" class="block text-sm font-semibold text-gray-700 mb-2">รายละเอียดเพิ่มเติม 📍 <span class="text-red-500">*</span></label>
+                            <textarea id="itemDesc" rows="3" required placeholder="ระบุสถานที่, เวลาที่คาดว่าหาย/เจอ, จุดสังเกต" 
+                                class="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-luxury-gold focus:border-transparent outline-none transition-all bg-white shadow-sm font-light resize-none"></textarea>
+                        </div>
                     </div>
 
                     <div>
-                        <label for="itemDesc" class="block text-sm font-semibold text-gray-700 mb-2">รายละเอียดเพิ่มเติม <span class="text-red-500">*</span></label>
-                        <textarea id="itemDesc" rows="3" required placeholder="ระบุสถานที่, เวลาที่คาดว่าหาย/เจอ, จุดสังเกต" 
-                            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-luxury-navy focus:border-transparent outline-none transition-all bg-white/50 focus:bg-white"></textarea>
-                    </div>
-
-                    <div>
-                        <label for="contactInfo" class="block text-sm font-semibold text-gray-700 mb-2">ข้อมูลติดต่อกลับ <span class="text-red-500">*</span></label>
+                        <label for="contactInfo" class="block text-sm font-semibold text-gray-700 mb-2">ช่องทางติดต่อกลับ 📱 <span class="text-red-500">*</span></label>
                         <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fa-solid fa-address-book text-gray-400"></i>
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fa-brands fa-line text-green-500 text-lg"></i>
                             </div>
                             <input type="text" id="contactInfo" required placeholder="Line ID หรือ เบอร์โทรศัพท์" 
-                                class="w-full pl-10 px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-luxury-navy focus:border-transparent outline-none transition-all bg-white/50 focus:bg-white">
+                                class="w-full pl-12 px-5 py-3.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-luxury-gold focus:border-transparent outline-none transition-all bg-white shadow-sm font-light">
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">รูปภาพสิ่งของ (ถ้ามี)</label>
-                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:bg-gray-50 transition-colors bg-white/30 relative">
-                            <div class="space-y-1 text-center w-full">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">รูปภาพประกอบ 📸 (ถ้ามียิ่งดีเลยฮับ)</label>
+                        <div class="mt-1 flex justify-center px-6 pt-6 pb-8 border-2 border-gray-200 border-dashed rounded-2xl hover:bg-luxury-gold/5 transition-colors bg-white relative overflow-hidden group">
+                            <div class="space-y-2 text-center w-full z-10">
                                 <div id="image-preview-container" class="hidden mb-4">
-                                    <img id="image-preview" src="" alt="Preview" class="mx-auto h-48 object-cover rounded-lg shadow-sm">
+                                    <img id="image-preview" src="" alt="Preview" class="mx-auto max-h-48 object-contain rounded-xl shadow-md border border-gray-100">
                                 </div>
-                                <i class="fa-solid fa-cloud-arrow-up text-3xl text-gray-400 mb-2" id="upload-icon"></i>
+                                <div id="upload-icon-wrapper" class="w-16 h-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-pink-100 transition-colors animate-pulse">
+                                    <i class="fa-solid fa-camera-retro text-2xl text-pink-400" id="upload-icon"></i>
+                                </div>
                                 <div class="flex text-sm text-gray-600 justify-center">
-                                    <label for="imageUpload" class="relative cursor-pointer bg-white rounded-md font-medium text-luxury-navy hover:text-luxury-purple focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-luxury-navy">
-                                        <span>อัปโหลดรูปภาพ</span>
+                                    <label for="imageUpload" class="relative cursor-pointer bg-white rounded-md font-semibold text-luxury-navy hover:text-luxury-gold transition-colors focus-within:outline-none">
+                                        <span>คลิกเพื่ออัปโหลดรูปภาพ</span>
                                         <input id="imageUpload" name="imageUpload" type="file" class="sr-only" accept="image/*">
                                     </label>
                                 </div>
-                                <p class="text-xs text-gray-500 mt-2">ระบบจะปรับขนาดภาพให้อัตโนมัติ</p>
+                                <p class="text-xs text-gray-400 font-light">รับรองภาพสวยชัดเจนแน่นอน ✨</p>
                             </div>
                         </div>
                         <input type="hidden" id="base64ImageOutput">
                     </div>
 
-                    <div class="flex items-start bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-                        <div class="flex items-center h-5">
-                            <input id="privacyConsent" type="checkbox" required class="w-5 h-5 text-luxury-navy border-gray-300 rounded focus:ring-luxury-navy cursor-pointer">
-                        </div>
-                        <div class="ml-3 text-sm">
-                            <label for="privacyConsent" class="font-medium text-gray-700 cursor-pointer">ฉันยินยอมความเป็นส่วนตัว <span class="text-red-500">*</span></label>
-                            <p class="text-gray-500">อนุญาตให้แสดงข้อมูลการติดต่อบนเว็บไซต์นี้เพื่อวัตถุประสงค์ในการติดตามสิ่งของเท่านั้น</p>
-                        </div>
-                    </div>
-
-                    <div class="pt-4 flex gap-4">
-                        <button type="button" id="btn-cancel" class="w-1/3 bg-white border border-gray-300 text-gray-700 font-bold py-3 px-4 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
+                    <div class="pt-6 flex gap-4 border-t border-gray-100">
+                        <button type="button" id="btn-cancel" class="w-1/3 bg-gray-50 border border-gray-200 text-gray-600 font-semibold py-4 px-4 rounded-xl hover:bg-gray-100 transition-colors shadow-sm">
                             ยกเลิก
                         </button>
-                        <button type="submit" id="btn-submit" class="w-2/3 luxury-gradient text-white font-bold py-3 px-4 rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center justify-center">
-                            <i class="fa-solid fa-floppy-disk mr-2"></i> บันทึกข้อมูล
+                        <button type="submit" id="btn-submit" class="w-2/3 luxury-gradient text-white font-bold py-4 px-4 rounded-xl hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center btn-glow">
+                            <i class="fa-solid fa-paper-plane mr-2"></i> บันทึกข้อมูลเลย! 🐾
                         </button>
                     </div>
                 </form>
             </div>
         </div>
-        
     </main>
 
-    <div id="toast-container" class="flex flex-col gap-2"></div>
+    <div id="toast-container" class="flex flex-col gap-3"></div>
 
     <script type="module" src="script.js"></script>
 </body>
