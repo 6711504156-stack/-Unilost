@@ -1,5 +1,4 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-// เพิ่ม doc และ deleteDoc เข้ามาสำหรับการลบข้อมูล
 import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query, orderBy, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // ================= Firebase Configuration =================
@@ -30,7 +29,7 @@ const submitBtn = document.getElementById('btn-submit');
 const imageInput = document.getElementById('imageUpload');
 const imagePreview = document.getElementById('image-preview');
 const imagePreviewContainer = document.getElementById('image-preview-container');
-const uploadIcon = document.getElementById('upload-icon');
+const uploadIconWrapper = document.getElementById('upload-icon-wrapper');
 const base64Output = document.getElementById('base64ImageOutput');
 const reportsGrid = document.getElementById('reports-grid');
 const emptyState = document.getElementById('empty-state');
@@ -40,18 +39,18 @@ const listLoader = document.getElementById('list-loader');
 function showToast(message, type = 'success') {
     const toastContainer = document.getElementById('toast-container');
     const toast = document.createElement('div');
-    const bgClass = type === 'success' ? 'bg-green-600' : (type === 'error' ? 'bg-red-600' : 'bg-blue-600');
-    const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle');
+    const bgClass = type === 'success' ? 'bg-pink-500' : (type === 'error' ? 'bg-red-400' : 'bg-blue-400'); // ปรับสี Toast ให้ดู Pastel น่ารักขึ้น
+    const icon = type === 'success' ? 'fa-heart' : (type === 'error' ? 'fa-face-sad-tear' : 'fa-paw');
 
-    toast.className = `toast flex items-center ${bgClass} text-white px-6 py-4 rounded-xl shadow-lg mb-2`;
-    toast.innerHTML = `<i class="fa-solid ${icon} text-xl mr-3"></i> <div><p class="font-medium">${message}</p></div>`;
+    toast.className = `toast flex items-center ${bgClass} text-white px-6 py-4 rounded-2xl shadow-xl mb-3 border border-white/30`;
+    toast.innerHTML = `<i class="fa-solid ${icon} text-xl mr-3 animate-bounce"></i> <div><p class="font-medium tracking-wide">${message}</p></div>`;
     
     toastContainer.appendChild(toast);
     setTimeout(() => toast.classList.add('show'), 10);
     setTimeout(() => {
         toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
+        setTimeout(() => toast.remove(), 400);
+    }, 3500);
 }
 
 function navigateTo(viewName, defaultType = null) {
@@ -77,7 +76,7 @@ function resetImagePreview() {
     base64Output.value = '';
     imagePreview.src = '';
     imagePreviewContainer.classList.add('hidden');
-    uploadIcon.classList.remove('hidden');
+    uploadIconWrapper.classList.remove('hidden');
 }
 
 function compressImage(file) {
@@ -87,7 +86,7 @@ function compressImage(file) {
             const img = new Image();
             img.onload = () => {
                 const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 500; 
+                const MAX_WIDTH = 800; 
                 let width = img.width;
                 let height = img.height;
 
@@ -100,7 +99,7 @@ function compressImage(file) {
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
-                resolve(canvas.toDataURL('image/jpeg', 0.6));
+                resolve(canvas.toDataURL('image/jpeg', 0.7));
             };
             img.src = e.target.result;
         };
@@ -109,7 +108,7 @@ function compressImage(file) {
 }
 
 function timeAgo(date) {
-    if (!date) return 'เมื่อสักครู่';
+    if (!date) return 'เมื่อกี้เลยฮับ 🐾';
     const seconds = Math.floor((new Date() - date) / 1000);
     let interval = seconds / 31536000;
     if (interval > 1) return Math.floor(interval) + " ปีที่แล้ว";
@@ -121,7 +120,7 @@ function timeAgo(date) {
     if (interval > 1) return Math.floor(interval) + " ชั่วโมงที่แล้ว";
     interval = seconds / 60;
     if (interval > 1) return Math.floor(interval) + " นาทีที่แล้ว";
-    return "เมื่อสักครู่";
+    return "เมื่อกี้เลยฮับ 🐾";
 }
 
 // ================= Event Listeners =================
@@ -135,44 +134,52 @@ imageInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) {
-        showToast('กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น', 'error');
+        showToast('อ๊ะ! ใส่ได้แค่รูปภาพนะฮับ 🥺', 'error');
         return;
     }
 
     try {
-        uploadIcon.classList.add('hidden');
+        uploadIconWrapper.classList.add('hidden');
         imagePreviewContainer.classList.remove('hidden');
         imagePreview.src = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/svgs/solid/spinner.svg';
+        imagePreview.classList.add('animate-spin', 'p-10');
         
         const compressedBase64 = await compressImage(file);
+        imagePreview.classList.remove('animate-spin', 'p-10');
         imagePreview.src = compressedBase64;
         base64Output.value = compressedBase64;
     } catch (error) {
         console.error('Image error:', error);
-        showToast('เกิดข้อผิดพลาดในการประมวลผลรูปภาพ', 'error');
+        showToast('งื้ออ ประมวลผลรูปไม่ได้ฮับ 😭', 'error');
         resetImagePreview();
     }
 });
 
-// ================= ฟังก์ชันลบข้อมูล (ใหม่) =================
+// ================= ฟังก์ชันลบข้อมูล (พร้อมพลุฉลอง 🎉) =================
 reportsGrid.addEventListener('click', async (e) => {
-    // ตรวจสอบว่าคลิกโดนปุ่มลบหรือไม่
     const deleteBtn = e.target.closest('.delete-btn');
     if (!deleteBtn) return;
 
-    // ดึง ID ของเอกสารจากปุ่ม
     const docId = deleteBtn.getAttribute('data-id');
     
-    // แจ้งเตือนยืนยันก่อนลบ
-    if (confirm('🎉 เจอของแล้วใช่ไหมครับ?\nคุณแน่ใจหรือไม่ที่จะ "ลบ" รายการนี้ออกจากระบบ (ลบแล้วกู้คืนไม่ได้นะ)')) {
+    // เปลี่ยนคำถามยืนยันให้น่ารักขึ้น
+    if (confirm('🎉 เจอของแล้วหรือคืนของให้เจ้าของแล้วใช่ไหมฮับ?\n(กดตกลงเพื่อลบรายการนี้ออกจากระบบได้เลยน้า)')) {
         try {
-            // สั่งลบข้อมูลจาก Firestore โดยใช้ ID
             const docRef = doc(db, 'reports', docId);
             await deleteDoc(docRef);
-            showToast('ลบรายการเรียบร้อยแล้ว!', 'success');
+            
+            // ยิงพลุฉลองความสำเร็จ! 🎊
+            confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { y: 0.6 },
+                colors: ['#D4AF37', '#4A148C', '#ff69b4', '#87ceeb'] // สีพลุเข้ากับธีมเว็บ
+            });
+
+            showToast('เย้! ดีใจด้วยน้า ลบรายการเรียบร้อย 💖', 'success');
         } catch (error) {
             console.error("Error deleting document: ", error);
-            showToast('เกิดข้อผิดพลาด ไม่สามารถลบข้อมูลได้', 'error');
+            showToast('แงง ลบไม่ได้ เกิดข้อผิดพลาดฮับ 🥺', 'error');
         }
     }
 });
@@ -191,18 +198,18 @@ form.addEventListener('submit', async (e) => {
     };
 
     const originalBtnHtml = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> กำลังบันทึก...';
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> กำลังจดจำข้อมูล... 🐾';
     submitBtn.disabled = true;
 
     try {
         const reportsRef = collection(db, 'reports');
         await addDoc(reportsRef, formData);
         
-        showToast('บันทึกข้อมูลเรียบร้อยแล้ว!', 'success');
+        showToast('บันทึกข้อมูลเรียบร้อยแย้ว! ✨', 'success');
         navigateTo('home');
     } catch (error) {
         console.error("Error adding document: ", error);
-        showToast('บันทึกไม่สำเร็จ! กรุณาตรวจสอบสิทธิ์ Firestore Rules', 'error');
+        showToast('บันทึกไม่สำเร็จ! ขัดข้องทางระบบงับ 🥺', 'error');
     } finally {
         submitBtn.innerHTML = originalBtnHtml;
         submitBtn.disabled = false;
@@ -229,44 +236,51 @@ function loadReports() {
 
         snapshot.forEach((docSnap) => {
             const report = docSnap.data();
-            const docId = docSnap.id; // เก็บ ID ของแต่ละรายการไว้สำหรับใช้ลบ
+            const docId = docSnap.id;
             const isLost = report.type === 'lost';
             
+            // ปรับป้าย Badge น่ารักๆ
             const typeBadge = isLost 
-                ? `<span class="bg-indigo-100 text-luxury-navy px-3 py-1 rounded-full text-xs font-bold"><i class="fa-solid fa-bullhorn mr-1"></i> ของหาย</span>`
-                : `<span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-bold"><i class="fa-solid fa-hand-holding-heart mr-1"></i> เจอของ</span>`;
+                ? `<span class="bg-indigo-500/90 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-wide shadow-md border border-white/20"><i class="fa-solid fa-bullhorn mr-1.5"></i> ตามหาของฮับ</span>`
+                : `<span class="bg-pink-400/90 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-wide shadow-md border border-white/20"><i class="fa-solid fa-gift mr-1.5"></i> เก็บของได้ฮับ</span>`;
             
-            const borderColor = isLost ? 'border-indigo-100' : 'border-yellow-100';
-            const timeString = report.createdAt ? timeAgo(report.createdAt.toDate()) : 'เมื่อสักครู่';
+            const timeString = report.createdAt ? timeAgo(report.createdAt.toDate()) : 'เมื่อกี้เลยฮับ 🐾';
 
+            // ภาพพร้อมเอฟเฟกต์ซูม (ใส่รูปหมาน้อยถ้ารูปไม่มี)
             const imageHtml = report.image 
-                ? `<img src="${report.image}" alt="${report.name}" class="w-full h-48 object-cover">`
-                : `<div class="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-300"><i class="fa-solid fa-image text-4xl"></i></div>`;
+                ? `<img src="${report.image}" alt="${report.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out">`
+                : `<div class="w-full h-full bg-indigo-50 flex items-center justify-center text-indigo-200 group-hover:scale-110 transition-transform duration-700 ease-out"><i class="fa-solid fa-image text-5xl mb-2"></i></div>`;
 
-            // เพิ่มปุ่มถังขยะ (Delete Button) ไว้ที่มุมขวาบน
+            // สร้างการ์ด
             const cardHtml = `
-                <div class="glass-card rounded-2xl overflow-hidden border ${borderColor} hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group relative">
+                <div class="glass-premium rounded-[2rem] overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group relative border border-white/80 flex flex-col h-full">
                     
-                    <button data-id="${docId}" class="delete-btn absolute top-3 right-3 z-10 bg-white/90 text-red-500 hover:bg-red-500 hover:text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-all duration-300" title="เจอของแล้ว ลบเลย!">
-                        <i class="fa-solid fa-trash-can text-sm pointer-events-none"></i>
+                    <button data-id="${docId}" class="delete-btn absolute top-4 right-4 z-20 bg-white/90 backdrop-blur-md text-pink-500 hover:bg-pink-500 hover:text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-90 group-hover:scale-100 border border-white" title="กดลบเมื่อเจอของแย้ว! 🎉">
+                        <i class="fa-solid fa-check-circle text-xl pointer-events-none"></i>
                     </button>
 
-                    <div class="relative">
+                    <div class="relative overflow-hidden aspect-[4/3] w-full">
                         ${imageHtml}
-                        <div class="absolute top-3 left-3">${typeBadge}</div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="absolute top-4 left-4 z-10">${typeBadge}</div>
                     </div>
-                    <div class="p-5">
-                        <h3 class="font-bold text-xl text-gray-800 mb-2 line-clamp-1 group-hover:text-luxury-navy transition-colors">${report.name}</h3>
-                        <p class="text-gray-600 text-sm mb-4 line-clamp-2 h-10">${report.description}</p>
+                    
+                    <div class="p-6 flex flex-col flex-grow bg-white/60">
+                        <h3 class="font-bold text-xl text-luxury-navy mb-2 line-clamp-1">${report.name}</h3>
+                        <p class="text-gray-600 text-sm mb-6 line-clamp-2 leading-relaxed flex-grow font-light">${report.description}</p>
                         
-                        <div class="bg-gray-50 rounded-xl p-3 mb-3 border border-gray-100">
-                            <p class="text-xs text-gray-500 mb-1">ติดต่อกลับ:</p>
-                            <p class="font-medium text-sm text-luxury-navy flex items-center">
-                                <i class="fa-brands fa-line text-green-500 mr-2 text-lg"></i> ${report.contact}
+                        <div class="bg-white/80 rounded-2xl p-4 mb-4 border border-gray-100 shadow-sm">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">ติดต่อเพื่อนด่วนๆ 🏃‍♂️</p>
+                            <p class="font-medium text-luxury-navy flex items-center">
+                                <span class="w-8 h-8 rounded-full bg-green-100 text-green-500 flex items-center justify-center mr-3">
+                                    <i class="fa-brands fa-line text-lg animate-pulse"></i>
+                                </span>
+                                ${report.contact}
                             </p>
                         </div>
-                        <div class="flex justify-between items-center text-xs text-gray-400 mt-4 border-t border-gray-100 pt-3">
-                            <span><i class="fa-regular fa-clock mr-1"></i> ${timeString}</span>
+                        
+                        <div class="flex justify-between items-center text-xs font-medium text-gray-400 pt-2 border-t border-gray-200/60">
+                            <span class="flex items-center"><i class="fa-regular fa-clock mr-1.5"></i> ${timeString}</span>
                         </div>
                     </div>
                 </div>
@@ -280,5 +294,4 @@ function loadReports() {
     });
 }
 
-// เริ่มดึงข้อมูลเมื่อเปิดหน้าเว็บ
 loadReports();
