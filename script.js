@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-// เปลี่ยนจากการนำเข้า deleteDoc เป็น updateDoc แทนครับ
 import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+// นำเข้าระบบ Auth สำหรับระบุตัวตนผู้ใช้ฮับ 🛡️
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
 // ================= Firebase Configuration =================
 const firebaseConfig = {
@@ -15,6 +16,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app); // เตรียมใช้งานระบบยืนยันตัวตน
+
+let currentUserId = null; // ตัวแปรเก็บรหัสประจำตัวของคนที่เข้าเว็บ
 
 // ================= DOM Elements =================
 const views = { home: document.getElementById('home-view'), form: document.getElementById('form-view') };
@@ -156,24 +160,21 @@ imageInput.addEventListener('change', async (e) => {
     }
 });
 
-// ================= ฟังก์ชัน อัปเดตสถานะ (แทนการลบทิ้ง) =================
+// ================= ฟังก์ชัน อัปเดตสถานะ =================
 reportsGrid.addEventListener('click', async (e) => {
     const deleteBtn = e.target.closest('.delete-btn');
     if (!deleteBtn) return;
 
     const docId = deleteBtn.getAttribute('data-id');
     
-    // แจ้งเตือนยืนยัน
     if (confirm('🎉 เจอของหรือคืนของเรียบร้อยแล้วใช่ไหมฮับ?\n(ข้อมูลจะถูกเปลี่ยนสถานะเป็น "สำเร็จ" และบันทึกเป็นสถิติให้แอปเราต่อไปฮับ)')) {
         try {
             const docRef = doc(db, 'reports', docId);
             
-            // สั่งอัปเดตสถานะเป็น resolved แทนการใช้ deleteDoc
             await updateDoc(docRef, {
                 status: 'resolved'
             });
             
-            // ยิงพลุฉลอง!
             confetti({
                 particleCount: 150,
                 spread: 80,
@@ -193,13 +194,20 @@ reportsGrid.addEventListener('click', async (e) => {
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    // เช็คก่อนว่าดึงไอดีคนโพสต์มาได้ไหม ถ้าไม่ได้แปลว่าเน็ตอาจจะหลุด
+    if (!currentUserId) {
+        showToast('กำลังเชื่อมต่อระบบความปลอดภัย โปรดรอสักครู่ฮับ ⏳', 'error');
+        return;
+    }
+
     const formData = {
         type: document.querySelector('input[name="reportType"]:checked').value,
         name: document.getElementById('itemName').value.trim(),
         description: document.getElementById('itemDesc').value.trim(),
         contact: document.getElementById('contactInfo').value.trim(),
         image: base64Output.value || null,
-        status: 'active', // <--- เพิ่มสถานะเริ่มต้นเป็น active
+        status: 'active',
+        ownerId: currentUserId, // 🛡️ แอบเซฟไอดีของคนที่โพสต์ลงไปด้วย
         createdAt: serverTimestamp()
     };
 
@@ -245,8 +253,10 @@ function loadReports() {
             const docId = docSnap.id;
             const isLost = report.type === 'lost';
             
-            // เช็คสถานะว่าสำเร็จแล้วหรือยัง (ถ้าข้อมูลเก่าไม่มีฟิลด์นี้ ให้ถือว่า active)
             const isResolved = report.status === 'resolved';
+            
+            // 🛡️ เช็คว่าผู้ใช้ที่กำลังเปิดแอปอยู่ เป็นคนเดียวกับคนที่สร้างโพสต์นี้ไหม
+            const isOwner = report.ownerId === currentUserId; 
             
             const typeBadge = isLost 
                 ? `<span class="bg-indigo-500/90 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-wide shadow-md border border-white/20"><i class="fa-solid fa-bullhorn mr-1.5"></i> ตามหาของฮับ</span>`
@@ -258,8 +268,7 @@ function loadReports() {
                 ? `<img src="${report.image}" alt="${report.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out">`
                 : `<div class="w-full h-full bg-indigo-50 flex items-center justify-center text-indigo-200 group-hover:scale-110 transition-transform duration-700 ease-out"><i class="fa-solid fa-image text-5xl mb-2"></i></div>`;
 
-            // ================= ส่วนที่เพิ่มเข้ามาสำหรับสถานะ "สำเร็จแล้ว" =================
-            // 1. ถ้าสำเร็จแล้ว จะแสดงป้ายตราประทับสีเขียวทับการ์ด
+            // ตราประทับสำเร็จ
             const resolvedOverlay = isResolved ? `
                 <div class="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-30 flex items-center justify-center rounded-[2rem]">
                     <div class="bg-gradient-to-r from-green-400 to-emerald-500 text-white font-bold px-6 py-3 rounded-full shadow-2xl transform -rotate-12 text-2xl border-4 border-white animate-bounce">
@@ -268,13 +277,12 @@ function loadReports() {
                 </div>
             ` : '';
 
-            // 2. ซ่อนปุ่มกด ✅ ถ้าสถานะสำเร็จแล้ว เพื่อไม่ให้กดซ้ำ
-            const actionButton = !isResolved ? `
+            // 🛡️ โชว์ปุ่มสำเร็จ เฉพาะเมื่อ 1. ยังไม่สำเร็จ และ 2. เป็นเจ้าของโพสต์เท่านั้น!
+            const actionButton = (!isResolved && isOwner) ? `
                 <button data-id="${docId}" class="delete-btn absolute top-4 right-4 z-40 bg-white/90 backdrop-blur-md text-pink-500 hover:bg-pink-500 hover:text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-90 group-hover:scale-100 border border-white" title="กดเมื่อเจอของหรือส่งคืนแย้ว! 🎉">
                     <i class="fa-solid fa-check-circle text-xl pointer-events-none"></i>
                 </button>
             ` : '';
-            // ====================================================================
 
             const cardHtml = `
                 <div class="glass-premium rounded-[2rem] overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group relative border border-white/80 flex flex-col h-full ${isResolved ? 'opacity-90 grayscale-[20%]' : ''}">
@@ -317,4 +325,18 @@ function loadReports() {
     });
 }
 
-loadReports();
+// ================= ระบบสร้างบัญชีผู้ใช้อัตโนมัติ (Anonymous Auth) =================
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // มีผู้ใช้อยู่แล้ว เก็บ ID ประจำเครื่องไว้
+        currentUserId = user.uid;
+        // โหลดข้อมูลขึ้นมาโชว์หลังจากรู้ว่าใครเป็นคนเปิดเว็บ
+        loadReports(); 
+    } else {
+        // ถ้าเข้าเว็บครั้งแรก ให้ระบบแอบสมัครไอดีให้เลย (แบบไม่ขออีเมล)
+        signInAnonymously(auth).catch((error) => {
+            console.error("Auth Error: ", error);
+            showToast('ระบบเกิดข้อผิดพลาดในการยืนยันตัวตนฮับ', 'error');
+        });
+    }
+});
